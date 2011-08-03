@@ -1,0 +1,177 @@
+*vimpress.txt*   Plugin for managing wordpress blog from Vim.
+
+Script:   blog.vim
+Authors:  Adrien Friggeri <mailto:adrien@friggeri.net>
+          Pigeond <http://pigeond.net/blog/>
+          * Preston M.[BOYPT] <mailto:pentie@gmail.com>
+          Justin Sattery <mailto:justin.slattery@fzysqr.com>
+          Lenin Lee <mailto:lenin.lee@gmail.com>      
+          * Conner McDaniel <mailto:connermcd@gmail.com>
+    (* Currently developing)
+    Conner's Repository: https://github.com/connermcd/VimRepress
+    Preston's Repository: https://bitbucket.org/pentie/vimrepress
+
+License:  Same terms as Vim itself (see |license|)
+
+============================================================================
+
+*INSTALL*
+
+下载 vimpress_2.x.x.zip, 解压到你的 .vim 目录:
+
+  cd ~/.vim
+  unzip /path/to/vimpress_2.x.x.zip
+
+*CONFIGURE*
+
+编辑 ~/.vimrc , 添加一个变量名 VIMPRESS. 本插件也支持多个博客.
+
+例如:
+
+let VIMPRESS = [{'username':'user',
+                \'password':'pass',
+                \'blog_url':'http://your-first-blog.com/'
+                \},
+                \{'username':'user',
+                \'blog_url':'http://your-second-blog.com/'
+                \}]
+
+把密码放在配置中是可选的. 假如没有在配置文件中放入密码
+将会在第一次使用插件的时候提示输入密码.
+
+假如需要 Markdown 支持, 在Ubuntu运行 `sudo apt-get install python-markdown' . 
+
+假如使用其他发行版 (或其他系统), 参考你的包管理器或者 python-markdown 
+项目主页: http://www.freewisdom.org/projects/python-markdown/Installation
+
+*COMMANDS*
+
+Vimpress 命令 (在方括号中的是可选项): 
+>
+    :BlogList [<edit_type>] [<count>]
+<  列出制定数目的最近的文章或者页面 .  在这个视图, 你可以按 <enter> 
+    编辑某个条目, 或者按 <delete> 移动某个条目到回收站. delete 并没有真正的
+    删除你的条目，仅仅是把它移动到回收站.
+    [<edit_type>] - post 或者 page, [默认 post].
+    [<count>]  - 要显示的数目 (仅在post可用, 默认 30)
+>
+    :BlogNew [<edit_type>]
+<   从当前缓冲区创建一个新条目编辑窗口.
+    [<edit_type>] - post 或者 page. [默认:post]
+>
+    :BlogSave [<save_type>]
+<   保存当前编辑窗口.
+    [<save_type>] - post 或者 publish. [默认:draft] 
+>
+    BlogPreview [<save_type>]
+<   假如设置了本地, 改变编辑窗口到一个HTML文件并在本地浏览器打开.否则,这个
+    命令等同于:BlogSave命令,除了在博客打开一个预览文章或页面的试图.
+    [<save_type>] - local, post, 或者 publish. [默认:local]
+>
+    :BlogOpen <post-link-or-id>
+<   打开指定的文章. 
+    <post-link-or-id> - url链接, 或者文章id号 
+>
+    :BlogSwitch [<index>]
+<   切换当前工作博客到配置文件中下一个或者制定索引的博客. 
+    [<index>]   - 将要切换过去的博客索引号.
+>
+    :BlogUpload <file>
+<   上传一个文件到博客的媒体库, 然后添加一个URL到当前缓冲区.
+     <file>     - /path/to/file
+>
+    :BlogCode [<language>]
+<   添加一个 pre tag到当前缓冲区的结尾指定代码语言.(例如：python)
+     [<language>] - 代码语言
+
+*TIPS*
+
+|Categories| 在你写一个文章的时候, 你想修改 "Cats" 行, 在插入模式按
+<Ctrl-x Ctrl-u>, 将会出现一个你博客中的类别属性目录.
+
+|Recovery| 加入你到博客的连接是不稳定的, gvim可能在你编辑文章的时候失去反应. 请耐心等待, 加入vim仍然丢失了你的文章, 别担心, vim有一个智能恢复系统, 重新打开vim并且输入|:recovery|命令, 你的文章应当已经出现. 输入|:help recovery| 获得更多信息.
+
+
+
+*EXAMPLES*
+
+一些命令列表包含太多的特殊用法, 例子也许更清楚一点.
+
+>
+    :BlogList             -  列出30篇最近文章.
+    :BlogList page        -  列出30个最近页面.
+    :BlogList post 100    -  列出100篇最近文章.
+
+    :BlogNew post         -  写新文章.
+    :BlogNew page         -  写新页面.
+
+    :BlogSave             -  保存 (默认 published.)
+    :BlogSave draft       -  保存到草稿.
+
+    :BlogPreview local    -  在本地浏览器预览文章或页面. 
+    :BlogPreview publish  -  等同`:BlogSave publish' 跟浏览器打开.
+
+    :BlogOpen 679
+    :BlogOpen http://your-first-blog.com/archives/679
+    :BlogOpen http://your-second-blog.com/?p=679
+    :BlogOpen http://your-third-blog.com/with-your-custom-permalink
+<
+
+*CHANGE_LOG*
+
+ 2011 May. 15 [by Preston]
+               Upgrade to 2.0 beta
+               Different command structure
+               Markdown file uploaded when post is saved and interpreted
+                when opened.
+               The open command takes many types of parameters
+
+              [by Conner]
+               Add: autocompletion for tags and categories with ^X^U
+               Add: prompts for password when not hardcoded
+               Add: BlogSwitch now accepts an index parameter
+               Add: Delete function in BlogList view.
+               *Add: HTML highlighting for blog syntax
+               *Add: Delete command
+               *(not yet included in Preston's release version)
+
+ 2011 Mar. 24 [by Lenin Lee]
+               Fix: use setl instead of set to set option value;
+               Add: Detect current buffer content before switch to vimpress 
+               views, open a split buffer to avoid conflicts.
+               Add: Commands to manage wordpress pages.
+
+               [by Preston]
+               Add: Auto charset convert for non-utf8 environment.(Win)
+               Add: Use python markdown module. Both markdown and markdown2
+               are supported.
+
+ 2011 Mar. 15 [by Preston]
+               Fix: MarkdownNewPost may override original mkd source file.
+               Add: MarkdownNewPost command detects title begins with
+                   "#" in first 10 lines of markdown source, copy the line
+                   striped "#" to the new post view.
+
+ 2011 Mar. 7  [by Preston]
+               Add: MarkdownPreview command to preiview markdown in browser.
+               Add: MarkdownNewPost command to convert a markdown
+               written post into html and set to the new post view.
+
+
+ 2011 Mar. 4  [by Preston]
+               Add: Move blog config info to personal .vimrc
+               Add: Multiple blog config is now supported with :BlogSwitch
+               command.
+               Add: Show which blog your editing at :BlogList view.
+               Fix: bug running :BlogList in the List view got error.
+
+ 2011 Feb. 15 [by Preston]
+               Add: BlogPreview Command.
+               Add: BlogCode command args to specify code type
+               Change: blog_url uses pure address.
+               Code: Some code pretty work.
+
+ 2010 Aug. 20 [by Justin] 
+               Fixed a bug with BlogSave command, and added feature to take
+               an existing document and use the BlogNew command to convert 
+               it to a blog post (which can be saved with the header intact). 
